@@ -47,6 +47,9 @@ public class HttpServletRequest {
      */
     private String requestUri;
 
+    /**
+     * 放置請求參數
+     */
     private Map<String,String> parameters = new HashMap<>();
 
 
@@ -102,12 +105,22 @@ public class HttpServletRequest {
             //data.length>1 代表有附帶參數
             if(data.length>1){
                 /*
-                 * username=roshia&password=123456 進行第二次解析
-                 *
+                 * username=roshia&password=123456 透過"&"進行第二次解析
+                 * 會得到[username=roshia,password=123456]
                  */
                 String[] parse = data[1].split("&");
                 for (int i = 0; i <parse.length; i++) {
+                    /*
+                     * 第三次透過"="解析可以獲得請參數
+                     * [username,roshia,password,123456]
+                     */
                     String[] split = parse[i].split("=");
+                    /*
+                     * 把請求結果放入Map備用
+                     * 由於請求的參數可能只有參數名，沒有參數值
+                     * 例如：username= ， 解析出來的結果[username]只有一個元素
+                     * 所以put value的時候添加一個判斷，不含參數值就put Null
+                     */
                     parameters.put(split[0],split.length>1?split[1]:null);
                 }
             }

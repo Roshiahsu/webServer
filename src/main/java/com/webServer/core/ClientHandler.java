@@ -24,9 +24,20 @@ public class ClientHandler implements Runnable{
     public void run() {
         System.out.println("ClientHandler開始");
         try {
+            //解析請求
             HttpServletRequest request = new HttpServletRequest(socket);
+
+
+
+
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
