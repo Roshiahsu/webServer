@@ -8,47 +8,42 @@ import com.webServer.utils.Utils;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * @ClassName RegServlet
+ * @ClassName LoginServlet
  * @Version 1.0
- * @Description TODO 註冊業務
- * @Date 2023/4/1、下午8:52
+ * @Description TODO
+ * @Date 2023/4/1、下午10:51
  */
-public class RegServlet {
-
+public class LoginServlet {
 
     private Statement s ;
 
-    public void service(HttpServletRequest request, HttpServletResponse response){
+    public void service(HttpServletRequest request,HttpServletResponse response){
         String username = request.getParameters("username");
-        String nick = request.getParameters("nickname");
-        String password = request.getParameters("password");
+        String password =request.getParameters("password");
         System.out.println("username:"+username);
-        System.out.println("nickname:"+nick);
         System.out.println("password:"+password);
 
-        password=Utils.encode(password);
-
-        try(
+        try (
                 Connection conn = JDBCConfig.getConn()
-        ) {
+        ){
             s = conn.createStatement();
-            if (SqlUtils.querySelect(username,s)!=0){
+            if (SqlUtils.querySelect(username,s)!=1){
                 response.setEntity(new File(Utils.DIR+"/myweb/fail.html"));
                 return;
             }
-            SqlUtils.insert(username,password,nick,s);
+            password = Utils.encode(password);
+            String queryPassword = SqlUtils.queryGetPassword(username, this.s);
+            if(queryPassword.equals(password)){
+                response.setEntity(new File(Utils.DIR+"/myweb/ok.html"));
+            }else{
+                response.setEntity(new File(Utils.DIR+"/myweb/fail.html"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        response.setEntity(new File(Utils.DIR+"/myweb/ok.html"));
     }
-
-
-
-
 }
