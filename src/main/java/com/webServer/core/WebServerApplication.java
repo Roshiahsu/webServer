@@ -27,13 +27,14 @@ public class WebServerApplication {
     //負責啟動
     public void start(){
         try {
-            System.out.println("等待客戶端連接");
-            Socket socket = serverSocket.accept();
-            System.out.println("一個客戶端連線了");
-            ClientHandler handler = new ClientHandler(socket);
-            Thread thread = new Thread(handler);
-            thread.start();
-
+            while(true){
+                System.out.println("等待客戶端連接");
+                Socket socket = serverSocket.accept();
+                System.out.println("一個客戶端連線了");
+                ClientHandler handler = new ClientHandler(socket);
+                Thread thread = new Thread(handler);
+                thread.start();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

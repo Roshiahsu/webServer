@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @ClassName HttpServletResponse
@@ -60,10 +61,12 @@ public class HttpServletResponse {
      */
     private void sendHeaders() throws IOException {
         String line;
-        line = "Content-Type: text/html";
-        printLn(line);
-        line = "Content-Length: " + entity.length();
-        printLn(line);
+        Set<Map.Entry<String, String>> entrySet = headers.entrySet();
+        for (Map.Entry<String, String> e : entrySet) {
+            line = e.getKey()+": "+e.getValue();
+            printLn(line);
+        }
+        printLn("");
     }
 
     private void sendContent() throws IOException {
@@ -94,9 +97,14 @@ public class HttpServletResponse {
 
     public void setEntity(File entity) {
         this.entity = entity;
+        String fileName = entity.getName();
+        String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+        addHeaders("Content-Type",HttpContext.mimeMapping.get(ext));
+        addHeaders("Content-Length",entity.length()+"");
     }
 
     public File getEntity() {
+
         return entity;
     }
 
