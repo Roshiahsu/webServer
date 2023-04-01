@@ -1,7 +1,9 @@
 package com.webServer.core;
 
 import com.webServer.http.HttpServletRequest;
+import com.webServer.http.HttpServletResponse;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -17,17 +19,30 @@ public class ClientHandler implements Runnable{
 
     public ClientHandler(Socket socket){
         this.socket = socket;
-
     }
 
     @Override
     public void run() {
         System.out.println("ClientHandler開始");
         try {
-            //解析請求
+            //1.解析請求
             HttpServletRequest request = new HttpServletRequest(socket);
+            HttpServletResponse response = new HttpServletResponse(socket);
+            //2.處理請求
+            String uri = request.getUri();
+            File file = new File("./webapps"+uri);
+            if(file.exists()&&file.isFile()){
+                response.setEntity(file);
+            }else{
+                response.setStatusCode(404);
+                response.setStatusReason("Not Found");
+                response.setEntity(new File("./webapps/root/404.html"));
+            }
 
 
+
+            //3.發送響應
+            response.response();
 
 
         } catch (IOException e) {

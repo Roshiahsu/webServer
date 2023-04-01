@@ -1,6 +1,7 @@
 package com.webServer.http;
 
 import com.sun.xml.internal.ws.util.StringUtils;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.Map;
  * @Description 解析請求
  * @Date 2023/3/24、上午3:41
  */
+
 public class HttpServletRequest {
     /**
      * 回車常量
@@ -77,6 +79,7 @@ public class HttpServletRequest {
         String[] data = line.split("\\s");
         method = data[0];
         uri = data[1];
+        parseUri(uri);
         protocol = data[2];
         System.out.println("Method:"+method);
         System.out.println("uri:"+uri);
@@ -85,7 +88,7 @@ public class HttpServletRequest {
 
     /**
      * 抽象路徑進一步解析
-     * @param uri
+     * @param uri 抽象路徑
      */
     private void parseUri(String uri){
             System.out.println("開始分析uri");
@@ -165,5 +168,29 @@ public class HttpServletRequest {
             pre = cur;
         }
         return stringBuffer.toString().trim();
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public String getRequestUri() {
+        return requestUri;
+    }
+
+    public String getHeaders(String name){
+        return headers.get(name);
+    }
+
+    public String getParameters(String name){
+        return parameters.get(name);
     }
 }
