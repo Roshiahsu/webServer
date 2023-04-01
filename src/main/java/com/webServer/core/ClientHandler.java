@@ -2,6 +2,7 @@ package com.webServer.core;
 
 import com.webServer.http.HttpServletRequest;
 import com.webServer.http.HttpServletResponse;
+import com.webServer.servlet.RegServlet;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,14 +30,20 @@ public class ClientHandler implements Runnable{
             HttpServletRequest request = new HttpServletRequest(socket);
             HttpServletResponse response = new HttpServletResponse(socket);
             //2.處理請求
-            String uri = request.getUri();
-            File file = new File("./webapps"+uri);
-            if(file.exists()&&file.isFile()){
-                response.setEntity(file);
+            String path = request.getRequestUri();
+
+            if ("/myweb/reg".equals(path)){
+                RegServlet regServlet = new RegServlet();
+                regServlet.service(request,response);
             }else{
-                response.setStatusCode(404);
-                response.setStatusReason("Not Found");
-                response.setEntity(new File("./webapps/root/404.html"));
+                File file = new File("./webapps"+path);
+                if(file.exists()&&file.isFile()){
+                    response.setEntity(file);
+                }else{
+                    response.setStatusCode(404);
+                    response.setStatusReason("Not Found");
+                    response.setEntity(new File("./webapps/root/404.html"));
+                }
             }
 
 

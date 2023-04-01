@@ -127,8 +127,7 @@ public class HttpServletRequest {
                     parameters.put(split[0],split.length>1?split[1]:null);
                 }
             }
-
-
+        System.out.println(parameters.toString());
         }
 
     /**
